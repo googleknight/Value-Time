@@ -15,7 +15,7 @@ App.fn.renderTimeLoop = function(){
 
 App.fn.renderTime = function(){
     var today = new Date();
-	var hours = (24-today.getHours()).toString();
+	var hours = (24-today.getHours()-1).toString();
 	if(hours.length<2)
 		hours="0"+hours;
 	var minutes=(60-today.getMinutes()).toString();
