@@ -9,7 +9,7 @@ to complete his goals and prevent him to waste any time. In short, it is kind of
 
 To use this extension
 
-•Select "Clone or Download" button and Select "Download Zip"
+•Download the repository from <a href="https://github.com/googleknight/Value-Time/archive/master.zip">Value-Time</a>
 <br>
 •Extract the zip drive and open chrome://extensions/ page in chrome.
 <br>
