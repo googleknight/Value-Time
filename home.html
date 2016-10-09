@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>New Tab</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="timeapp"></div>
+
+<script id="time-template" type="text/x-handlebars-template">
+  <h1 class="time-label">TIME LEFT IN DAY</h1>
+  <h2 class="count">{{hour}}:{{minute}}:{{second}}:{{milliseconds}}</h2>
+</script>
+
+<script src="js/handlebars.js"></script>
+<script src="app/timeapp.js"></script>
+
+</body>
+</html>
