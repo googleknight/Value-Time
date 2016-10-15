@@ -2,17 +2,28 @@
 
 var $  = document.getElementById.bind(document);
 var $$ = document.querySelectorAll.bind(document);
-
+var myquote;
 var App = function($el){
   this.$el = $el;
+  this.slidequote();
   this.renderTimeLoop();
 };
 App.fn = App.prototype;
+function getRandomIntInclusive(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+App.fn.slidequote = function(){
+	var mydata = JSON.parse(data);
+	var i=getRandomIntInclusive(0,mydata.length);
+	myquote=mydata[i];
+	
 
+};
 App.fn.renderTimeLoop = function(){
   this.interval = setInterval(this.renderTime.bind(this), 80);
 };
-
 App.fn.renderTime = function(){
     var today = new Date();
 	var hours = (24-today.getHours()-1).toString();
@@ -35,9 +46,11 @@ App.fn.renderTime = function(){
       hour:         hours,
 	  minute:	minutes,
 	  second:	seconds,
-	  milliseconds: milli
+	  milliseconds: milli,
+	  quote:         myquote
     }));
   }.bind(this));
+
 };
 
 App.fn.$$ = function(sel){

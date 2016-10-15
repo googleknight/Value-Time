@@ -17,7 +17,7 @@ html {
 
 body {
   -moz-osx-font-smoothing: grayscale;
-  -webkit-align-items: center;
+  
   -webkit-flex-direction: column;
   -webkit-font-smoothing: antialiased;
   -webkit-justify-content: center;
@@ -32,12 +32,20 @@ body, input {
   color: #B0B5B9;
   font-size: 1.2rem;
   line-height: 1;
-  margin: 0 0 0 2px;
+  margin: 0 20% 0 25%;
 }
+.quote-label {
+  color: #B0B5B9;
+  font-size: 1.2rem;
+  line-height: 1;
+  margin: 0 20% 0 25%;
+  font-style:italic;
+}
+
 
 .count {
   color: #494949;
-  margin: 0;
+  margin: 0 20% 0 25%;
   font-size: 6rem;
   line-height: 1;
   font-weight: 600;
