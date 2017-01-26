@@ -5,8 +5,17 @@ var $$ = document.querySelectorAll.bind(document);
 var myquote;
 var App = function($el){
   this.$el = $el;
+  this.$el.addEventListener(
+    'submit', this.submit.bind(this)
+  );
+  this.analyticsflag=localStorage.analyticsflag;
+  if (this.analyticsflag==="on") {
   this.slidequote();
   this.renderTimeLoop();
+  } else {
+    this.renderChoose();
+  }
+  
 };
 App.fn = App.prototype;
 function getRandomIntInclusive(min, max) {
@@ -21,6 +30,20 @@ App.fn.slidequote = function(){
 	
 
 };
+
+App.fn.submit = function(e){
+  e.preventDefault();
+  var pageTracker = _gat._getTracker("UA-88251366-2");
+  pageTracker._trackPageview();
+  this.analyticsflag = "on";
+  localStorage.analyticsflag = "on";
+  this.slidequote();
+  this.renderTimeLoop();
+};
+App.fn.renderChoose = function(){
+  this.html(this.view('welcome')());
+};
+
 App.fn.renderTimeLoop = function(){
   this.interval = setInterval(this.renderTime.bind(this), 80);
 };
