@@ -49,10 +49,15 @@ App.fn.renderTimeLoop = function(){
 };
 App.fn.renderTime = function(){
     var today = new Date();
-	var hours = (24-today.getHours()-1).toString();
+	if(today.getSeconds()==0 && today.getMinutes()==0)
+		var hours = (24-today.getHours()).toString();
+	else
+		var hours = (24-today.getHours()-1).toString();
 	if(hours.length<2)
 		hours="0"+hours;
-	var minutes=(60-today.getMinutes()).toString();
+	if(today.getSeconds()==0 && today.getMinutes()==0)
+		var minutes="00";
+	var minutes=(60-today.getMinutes()-1).toString();
 	if(minutes.length<2)
 		minutes="0"+minutes;
 	var seconds=(60-today.getSeconds()).toString();
