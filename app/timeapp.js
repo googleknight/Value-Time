@@ -57,7 +57,8 @@ App.fn.renderTime = function(){
 		hours="0"+hours;
 	if(today.getSeconds()==0 && today.getMinutes()==0)
 		var minutes="00";
-	var minutes=(60-today.getMinutes()-1).toString();
+	else
+		var minutes=(60-today.getMinutes()-1).toString();
 	if(minutes.length<2)
 		minutes="0"+minutes;
 	var seconds=(60-today.getSeconds()).toString();
