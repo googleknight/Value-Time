@@ -33,10 +33,13 @@ App.fn.slidequote = function(){
 
 App.fn.submit = function(e){
   e.preventDefault();
+  document.getElementById("mode").style.display='block';
+  document.getElementById("mode").addEventListener("click", switchmode);
   var pageTracker = _gat._getTracker("UA-88251366-2");
   pageTracker._trackPageview();
   this.analyticsflag = "on";
   localStorage.analyticsflag = "on";
+  localStorage.mode = 0;
   this.slidequote();
   this.renderTimeLoop();
 };
@@ -46,6 +49,7 @@ App.fn.renderChoose = function(){
 
 App.fn.renderTimeLoop = function(){
   this.interval = setInterval(this.renderTime.bind(this), 80);
+  
 };
 App.fn.renderTime = function(){
     var today = new Date();
@@ -70,6 +74,22 @@ App.fn.renderTime = function(){
 	else if(milli.length==2)
 		milli="0"+milli;
 	
+	if(localStorage.mode == 0)
+	{
+		document.body.style.backgroundColor = "white";	
+		document.getElementById("mode").value = "Dark Mode";
+		document.getElementById("mode").style.color = "black";
+		document.getElementById("mode").style.backgroundColor = "white";
+		document.getElementById("mode").style.borderColor = "black";
+	}	
+	else
+	{
+		document.body.style.backgroundColor = "black";
+		document.getElementById("mode").value = "Light Mode";
+		document.getElementById("mode").style.color = "white";
+		document.getElementById("mode").style.backgroundColor = "black";
+		document.getElementById("mode").style.borderColor = "white";
+	}
   requestAnimationFrame(function(){
     this.html(this.view('time')({
       hour:         hours,
@@ -79,7 +99,8 @@ App.fn.renderTime = function(){
 	  quote:         myquote
     }));
   }.bind(this));
-
+	
+	
 };
 
 App.fn.$$ = function(sel){
@@ -92,9 +113,12 @@ App.fn.html = function(html){
 
 App.fn.view = function(name){
   var $el = $(name + '-template');
+  
   return Handlebars.compile($el.innerHTML);
 };
 
 window.app = new App($('timeapp'))
+
+	
 
 })();
