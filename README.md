@@ -72,7 +72,9 @@ Contributions are welcome! Feel free to submit issues and pull requests.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+Copyright (c) 2025 Shubham Mathur. All rights reserved.
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contact
 
