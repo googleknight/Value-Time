@@ -6,6 +6,22 @@ const STORAGE_KEYS = {
   MODE: 'mode'
 };
 
+// Analytics constants
+const ANALYTICS_EVENTS = {
+    NEW_TAB_OPENED: 'new_tab_opened',
+    ONBOARDING_COMPLETE: 'onboarding_complete',
+    THEME_CHANGE: 'theme_change'
+};
+
+const ANALYTICS_CATEGORIES = {
+    ENGAGEMENT: 'engagement'
+};
+
+const ANALYTICS_LABELS = {
+    APP_START: 'app_start',
+    FIRST_TIME_USER: 'first_time_user'
+};
+
 // Theme configuration for light and dark modes
 const THEMES = {
   light: {
@@ -94,6 +110,13 @@ class TimeApp {
       if (localStorage.getItem(STORAGE_KEYS.ANALYTICS) === "on") {
         this.refreshQuote();
         this.startTimeLoop();
+        // Track new tab opened
+        if (window.analytics) {
+          window.analytics.trackEvent(ANALYTICS_EVENTS.NEW_TAB_OPENED, {
+            event_category: ANALYTICS_CATEGORIES.ENGAGEMENT,
+            event_label: ANALYTICS_LABELS.APP_START
+          });
+        }
       } else {
         this.renderOnboarding();
       }
@@ -143,6 +166,14 @@ class TimeApp {
     this.refreshQuote();
     this.startTimeLoop();
     this.updateTime();
+
+    // Track onboarding completion
+    if (window.analytics) {
+      window.analytics.trackEvent(ANALYTICS_EVENTS.ONBOARDING_COMPLETE, {
+        event_category: ANALYTICS_CATEGORIES.ENGAGEMENT,
+        event_label: ANALYTICS_LABELS.FIRST_TIME_USER
+      });
+    }
   }
 
   // Start the main app functionality
@@ -170,6 +201,13 @@ class TimeApp {
     
     this.applyTheme();
     this.updateTime();
+
+    // Track theme change
+    if (window.analytics) {
+      window.analytics.trackEvent(ANALYTICS_EVENTS.THEME_CHANGE, {
+        theme: newMode === "1" ? 'dark' : 'light'
+      });
+    }
   }
 
   // Render the onboarding screen
