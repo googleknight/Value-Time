@@ -161,7 +161,7 @@ class TimeApp {
     localStorage.setItem(STORAGE_KEYS.ANALYTICS, "on");
     this.isOnboarding = false;
     
-    if (this.modeButton) this.modeButton.style.display = 'flex';
+    this.initializeButtons(); // Reinitialize buttons after onboarding
     
     this.refreshQuote();
     this.startTimeLoop();
@@ -182,7 +182,7 @@ class TimeApp {
     localStorage.setItem(STORAGE_KEYS.ANALYTICS, "on");
     this.isOnboarding = false;
     
-    if (this.modeButton) this.modeButton.style.display = 'flex';
+    this.initializeButtons(); // Reinitialize buttons when starting app
     
     this.refreshQuote();
     this.startTimeLoop();
