@@ -7,26 +7,10 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width">
   <link rel="stylesheet" href="css/style.css">
-  <script src="https://ssl.google-analytics.com/ga.js" type="text/javascript"></script>  
 </head>
-<body >
+<body>
 <div id="timeapp"></div>
-<script id="welcome-template" type="text/x-handlebars-template">
-  <form>
-    <footer>
-	<button  type="submit" id="welcomebutton">Let`s begin!</button>
-    </footer>
-  <form>
-</script>
-
-<script id="time-template" type="text/x-handlebars-template">
-	<h1 class="time-label">TIME LEFT IN DAY</h1>
-  <div id="count"><h2 class="count" >{{hour}}:{{minute}}:{{second}}:{{milliseconds}}</h2></div>
-  <br>
-  <h1 class="quote-label">{{quote}}</h1>  
-</script>
-<script type="text/javascript" src="app/quotes.json"></script>
-<script src="js/handlebars.js"></script>
+<script src="app/quotes.json"></script>
 <script src="app/timeapp.js"></script>
 <script src="app/Mode.js"></script>
 <input id="mode" value="Dark Mode" type="button"/>

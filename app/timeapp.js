@@ -1,124 +1,152 @@
-(function(){
-
-var $  = document.getElementById.bind(document);
-var $$ = document.querySelectorAll.bind(document);
-var myquote;
-var App = function($el){
-  this.$el = $el;
-  this.$el.addEventListener(
-    'submit', this.submit.bind(this)
-  );
-  this.analyticsflag=localStorage.analyticsflag;
-  if (this.analyticsflag==="on") {
-  this.slidequote();
-  this.renderTimeLoop();
-  } else {
-    this.renderChoose();
+// Constants
+const REFRESH_INTERVAL = 80;
+const DEFAULT_QUOTE = "Make the most of your time.";
+const THEMES = {
+  light: {
+    backgroundColor: "white",
+    textColor: "black",
+    buttonText: "Dark Mode"
+  },
+  dark: {
+    backgroundColor: "black",
+    textColor: "white",
+    buttonText: "Light Mode"
   }
-  
 };
-App.fn = App.prototype;
-function getRandomIntInclusive(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+
+class TimeApp {
+  constructor(elementId) {
+    this.el = document.getElementById(elementId);
+    this.quotes = [];
+    this.currentQuote = DEFAULT_QUOTE;
+    this.interval = null;
+    
+    this.init();
+  }
+
+  async init() {
+    try {
+      await this.loadQuotes();
+      this.setupEventListeners();
+      
+      if (localStorage.analyticsflag === "on") {
+        this.refreshQuote();
+        this.startTimeLoop();
+      } else {
+        this.renderWelcome();
+      }
+    } catch (error) {
+      console.error('Failed to initialize TimeApp:', error);
+    }
+  }
+
+  async loadQuotes() {
+    try {
+      const response = await fetch('app/quotes.json');
+      this.quotes = await response.json();
+    } catch (error) {
+      console.error('Error loading quotes:', error);
+      this.quotes = [DEFAULT_QUOTE];
+    }
+  }
+
+  setupEventListeners() {
+    this.el.addEventListener('submit', this.handleSubmit.bind(this));
+    window.addEventListener('load', () => {
+      if (localStorage.analyticsflag === "on") {
+        this.refreshQuote();
+      }
+    });
+  }
+
+  refreshQuote() {
+    if (this.quotes.length > 0) {
+      const index = Math.floor(Math.random() * this.quotes.length);
+      this.currentQuote = this.quotes[index];
+    } else {
+      this.currentQuote = DEFAULT_QUOTE;
+    }
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    const modeButton = document.getElementById("mode");
+    modeButton.style.display = 'block';
+    modeButton.addEventListener("click", this.toggleTheme);
+    
+    localStorage.analyticsflag = "on";
+    localStorage.mode = "0";
+    
+    this.refreshQuote();
+    this.startTimeLoop();
+  }
+
+  toggleTheme() {
+    localStorage.mode = localStorage.mode === "0" ? "1" : "0";
+  }
+
+  startTimeLoop() {
+    this.interval = setInterval(() => this.updateTime(), REFRESH_INTERVAL);
+  }
+
+  updateTime() {
+    const timeLeft = this.calculateTimeLeft();
+    this.applyTheme();
+    this.render(timeLeft);
+  }
+
+  calculateTimeLeft() {
+    const now = new Date();
+    const hours = this.formatTimeUnit(24 - now.getHours() - (now.getMinutes() > 0 || now.getSeconds() > 0 ? 1 : 0));
+    const minutes = this.formatTimeUnit(now.getSeconds() > 0 ? 59 - now.getMinutes() : 60 - now.getMinutes());
+    const seconds = this.formatTimeUnit(60 - now.getSeconds());
+    const milliseconds = this.formatMilliseconds(1000 - now.getMilliseconds());
+
+    return { hours, minutes, seconds, milliseconds };
+  }
+
+  formatTimeUnit(value) {
+    return value.toString().padStart(2, '0');
+  }
+
+  formatMilliseconds(value) {
+    return value.toString().padStart(3, '0');
+  }
+
+  applyTheme() {
+    const theme = THEMES[localStorage.mode === "0" ? 'light' : 'dark'];
+    const modeButton = document.getElementById("mode");
+    
+    document.body.style.backgroundColor = theme.backgroundColor;
+    modeButton.value = theme.buttonText;
+    modeButton.style.color = theme.textColor;
+    modeButton.style.backgroundColor = theme.backgroundColor;
+    modeButton.style.borderColor = theme.textColor;
+  }
+
+  render({ hours, minutes, seconds, milliseconds }) {
+    requestAnimationFrame(() => {
+      this.el.innerHTML = `
+        <h1 class="time-label">TIME LEFT IN DAY</h1>
+        <div id="count">
+          <h2 class="count">${hours}:${minutes}:${seconds}:${milliseconds}</h2>
+        </div>
+        <br>
+        <h1 class="quote-label">${this.currentQuote}</h1>
+      `;
+    });
+  }
+
+  renderWelcome() {
+    this.el.innerHTML = `
+      <form>
+        <footer>
+          <button type="submit" id="welcomebutton">Let's begin!</button>
+        </footer>
+      </form>
+    `;
+  }
 }
-App.fn.slidequote = function(){
-	var mydata = JSON.parse(data);
-	var i=getRandomIntInclusive(0,mydata.length);
-	myquote=mydata[i];
-	
 
-};
-
-App.fn.submit = function(e){
-  e.preventDefault();
-  document.getElementById("mode").style.display='block';
-  document.getElementById("mode").addEventListener("click", switchmode);
-  var pageTracker = _gat._getTracker("UA-88251366-2");
-  pageTracker._trackPageview();
-  this.analyticsflag = "on";
-  localStorage.analyticsflag = "on";
-  localStorage.mode = 0;
-  this.slidequote();
-  this.renderTimeLoop();
-};
-App.fn.renderChoose = function(){
-  this.html(this.view('welcome')());
-};
-
-App.fn.renderTimeLoop = function(){
-  this.interval = setInterval(this.renderTime.bind(this), 80);
-  
-};
-App.fn.renderTime = function(){
-    var today = new Date();
-	if(today.getSeconds()==0 && today.getMinutes()==0)
-		var hours = (24-today.getHours()).toString();
-	else
-		var hours = (24-today.getHours()-1).toString();
-	if(hours.length<2)
-		hours="0"+hours;
-	if(today.getSeconds()==0)
-		var minutes=((60-today.getMinutes())%60).toString();
-	else
-		var minutes=(60-today.getMinutes()-1).toString();
-	if(minutes.length<2)
-		minutes="0"+minutes;
-	var seconds=((60-today.getSeconds())%60).toString();
-	if(seconds.length<2)
-		seconds="0"+seconds;
-	var milli=(1000-today.getMilliseconds()).toString();
-	if(milli.length==1)
-		milli="00"+milli;
-	else if(milli.length==2)
-		milli="0"+milli;
-	
-	if(localStorage.mode == 0)
-	{
-		document.body.style.backgroundColor = "white";	
-		document.getElementById("mode").value = "Dark Mode";
-		document.getElementById("mode").style.color = "black";
-		document.getElementById("mode").style.backgroundColor = "white";
-		document.getElementById("mode").style.borderColor = "black";
-	}	
-	else
-	{
-		document.body.style.backgroundColor = "black";
-		document.getElementById("mode").value = "Light Mode";
-		document.getElementById("mode").style.color = "white";
-		document.getElementById("mode").style.backgroundColor = "black";
-		document.getElementById("mode").style.borderColor = "white";
-	}
-  requestAnimationFrame(function(){
-    this.html(this.view('time')({
-      hour:         hours,
-	  minute:	minutes,
-	  second:	seconds,
-	  milliseconds: milli,
-	  quote:         myquote
-    }));
-  }.bind(this));
-	
-	
-};
-
-App.fn.$$ = function(sel){
-  return this.$el.querySelectorAll(sel);
-};
-
-App.fn.html = function(html){
-  this.$el.innerHTML = html;
-};
-
-App.fn.view = function(name){
-  var $el = $(name + '-template');
-  
-  return Handlebars.compile($el.innerHTML);
-};
-
-window.app = new App($('timeapp'))
-
-	
-
-})();
+// Initialize the app
+new TimeApp('timeapp');
