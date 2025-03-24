@@ -50,18 +50,11 @@ jobs:
           COMMITS=$(git log --pretty=format:"* %s (%h)" HEAD^..HEAD | grep -v "chore: bump version" | grep -v "chore: release")
           
           # Create release notes with version and commit messages
-          RELEASE_NOTES="## What's New in v${{ steps.current_version.outputs.current_version }}
-
-### Changes
-$COMMITS"
-          
-          # Escape newlines for GitHub Actions
-          RELEASE_NOTES="${RELEASE_NOTES//'%'/'%25'}"
-          RELEASE_NOTES="${RELEASE_NOTES//$'\n'/'%0A'}"
-          RELEASE_NOTES="${RELEASE_NOTES//$'\r'/'%0D'}"
-          
           echo "release_notes<<EOF" >> $GITHUB_OUTPUT
-          echo "$RELEASE_NOTES" >> $GITHUB_OUTPUT
+          echo "## What's New in v${{ steps.current_version.outputs.current_version }}" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "### Changes" >> $GITHUB_OUTPUT
+          echo "$COMMITS" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Create Release
