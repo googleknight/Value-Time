@@ -58,47 +58,38 @@ class TimeApp {
     this.quotes = {};
     this.currentQuote = DEFAULT_QUOTE;
     this.interval = null;
-    this.isOnboarding = !localStorage.getItem(STORAGE_KEYS.ANALYTICS);
+    this.isOnboarding = true; // Will be updated after storage check
     this.boundHandleSubmit = this.handleSubmit.bind(this);
     this.boundToggleTheme = this.toggleTheme.bind(this);
     
-    // Set initial mode if not set
-    if (!localStorage.getItem(STORAGE_KEYS.MODE)) {
-      localStorage.setItem(STORAGE_KEYS.MODE, "0");
-    }
-    
-    this.initializeButtons();
-    this.setupEventListeners();
-    this.applyTheme();
-    this.init();
+    // Initialize storage and check onboarding status
+    this.initializeStorage();
   }
 
-  // Clean up resources and event listeners
-  cleanup() {
-    if (this.interval) {
-      clearInterval(this.interval);
-      this.interval = null;
+  // Initialize storage and check onboarding status
+  async initializeStorage() {
+    try {
+      const result = await chrome.storage.local.get([STORAGE_KEYS.ANALYTICS, STORAGE_KEYS.MODE]);
+      this.isOnboarding = !result[STORAGE_KEYS.ANALYTICS];
+      
+      // Set initial mode if not set
+      if (!result[STORAGE_KEYS.MODE]) {
+        await chrome.storage.local.set({ [STORAGE_KEYS.MODE]: "0" });
+      }
+      
+      this.initializeButtons();
+      this.setupEventListeners();
+      this.applyTheme();
+      this.init();
+    } catch (error) {
+      console.error('Failed to initialize storage:', error);
+      // Fallback to default values
+      this.isOnboarding = true;
+      this.initializeButtons();
+      this.setupEventListeners();
+      this.applyTheme();
+      this.init();
     }
-    this.el.removeEventListener('submit', this.boundHandleSubmit);
-    if (this.modeButton) {
-      this.modeButton.removeEventListener('click', this.boundToggleTheme);
-    }
-  }
-
-  // Initialize theme toggle button
-  initializeButtons() {
-    this.modeButton = document.getElementById("mode");
-    if (this.modeButton) {
-      this.modeButton.removeEventListener('click', this.boundToggleTheme);
-      this.modeButton.addEventListener('click', this.boundToggleTheme);
-      this.modeButton.style.display = this.isOnboarding ? 'none' : 'flex';
-    }
-  }
-
-  // Set up event listeners for the app
-  setupEventListeners() {
-    this.el.removeEventListener('submit', this.boundHandleSubmit);
-    this.el.addEventListener('submit', this.boundHandleSubmit);
   }
 
   // Initialize the app and load quotes
@@ -107,7 +98,8 @@ class TimeApp {
       await this.loadQuotes();
       this.setupEventListeners();
       
-      if (localStorage.getItem(STORAGE_KEYS.ANALYTICS) === "on") {
+      const result = await chrome.storage.local.get([STORAGE_KEYS.ANALYTICS]);
+      if (result[STORAGE_KEYS.ANALYTICS] === "on") {
         this.refreshQuote();
         this.startTimeLoop();
         // Track new tab opened
@@ -122,6 +114,7 @@ class TimeApp {
       }
     } catch (error) {
       console.error('Failed to initialize TimeApp:', error);
+      this.renderOnboarding();
     }
   }
 
@@ -157,87 +150,102 @@ class TimeApp {
   }
 
   // Handle onboarding form submission
-  handleOnboardingSubmit(form) {
-    localStorage.setItem(STORAGE_KEYS.ANALYTICS, "on");
-    this.isOnboarding = false;
-    
-    this.initializeButtons(); // Reinitialize buttons after onboarding
-    
-    this.refreshQuote();
-    this.startTimeLoop();
-    this.updateTime();
+  async handleOnboardingSubmit(form) {
+    try {
+      await chrome.storage.local.set({ [STORAGE_KEYS.ANALYTICS]: "on" });
+      this.isOnboarding = false;
+      this.initializeButtons();
+      this.refreshQuote();
+      this.startTimeLoop();
+      this.updateTime();
 
-    // Track onboarding completion
-    if (window.analytics) {
-      window.analytics.trackEvent(ANALYTICS_EVENTS.ONBOARDING_COMPLETE, {
-        event_category: ANALYTICS_CATEGORIES.ENGAGEMENT,
-        event_label: ANALYTICS_LABELS.FIRST_TIME_USER
-      });
+      // Track onboarding completion
+      if (window.analytics) {
+        window.analytics.trackEvent(ANALYTICS_EVENTS.ONBOARDING_COMPLETE, {
+          event_category: ANALYTICS_CATEGORIES.ENGAGEMENT,
+          event_label: ANALYTICS_LABELS.FIRST_TIME_USER
+        });
+      }
+    } catch (error) {
+      console.error('Failed to save onboarding status:', error);
     }
   }
 
   // Start the main app functionality
-  startApp() {
+  async startApp() {
     this.cleanup();
-    localStorage.setItem(STORAGE_KEYS.ANALYTICS, "on");
-    this.isOnboarding = false;
-    
-    this.initializeButtons(); // Reinitialize buttons when starting app
-    
-    this.refreshQuote();
-    this.startTimeLoop();
+    try {
+      await chrome.storage.local.set({ [STORAGE_KEYS.ANALYTICS]: "on" });
+      this.isOnboarding = false;
+      this.initializeButtons();
+      this.refreshQuote();
+      this.startTimeLoop();
+    } catch (error) {
+      console.error('Failed to start app:', error);
+    }
   }
 
   // Toggle between light and dark themes
-  toggleTheme(event) {
+  async toggleTheme(event) {
     if (event) {
       event.preventDefault();
       event.stopPropagation();
     }
     
-    const currentMode = localStorage.getItem(STORAGE_KEYS.MODE);
-    const newMode = currentMode === "0" ? "1" : "0";
-    localStorage.setItem(STORAGE_KEYS.MODE, newMode);
-    
-    this.applyTheme();
-    this.updateTime();
+    try {
+      const result = await chrome.storage.local.get([STORAGE_KEYS.MODE]);
+      const currentMode = result[STORAGE_KEYS.MODE] || "0";
+      const newMode = currentMode === "0" ? "1" : "0";
+      
+      await chrome.storage.local.set({ [STORAGE_KEYS.MODE]: newMode });
+      this.applyTheme();
+      this.updateTime();
 
-    // Track theme change
-    if (window.analytics) {
-      window.analytics.trackEvent(ANALYTICS_EVENTS.THEME_CHANGE, {
-        theme: newMode === "1" ? 'dark' : 'light'
-      });
+      // Track theme change
+      if (window.analytics) {
+        window.analytics.trackEvent(ANALYTICS_EVENTS.THEME_CHANGE, {
+          theme: newMode === "1" ? 'dark' : 'light'
+        });
+      }
+    } catch (error) {
+      console.error('Failed to toggle theme:', error);
     }
   }
 
   // Render the onboarding screen
-  renderOnboarding() {
+  async renderOnboarding() {
     this.cleanup();
-    const theme = THEMES[localStorage.getItem(STORAGE_KEYS.MODE) === "0" ? 'light' : 'dark'];
-    
-    if (this.modeButton) this.modeButton.style.display = 'none';
-    
-    this.el.innerHTML = `
-      <div class="onboarding">
-        <div class="onboarding-content" style="color: ${theme.textColor}">
-          <h1>Welcome to ValueTime!</h1>
-          <p>Start your journey towards better time management.</p>
-          <form id="onboardingForm">
-            <button type="submit" class="start-button">Start Using ValueTime</button>
-          </form>
+    try {
+      const result = await chrome.storage.local.get([STORAGE_KEYS.MODE]);
+      const mode = result[STORAGE_KEYS.MODE] || "0";
+      const theme = THEMES[mode === "0" ? 'light' : 'dark'];
+      
+      if (this.modeButton) this.modeButton.style.display = 'none';
+      
+      this.el.innerHTML = `
+        <div class="onboarding">
+          <div class="onboarding-content" style="color: ${theme.textColor}">
+            <h1>Welcome to ValueTime!</h1>
+            <p>Start your journey towards better time management.</p>
+            <form id="onboardingForm">
+              <button type="submit" class="start-button">Start Using ValueTime</button>
+            </form>
+          </div>
         </div>
-      </div>
-    `;
+      `;
 
-    document.body.style.backgroundColor = theme.backgroundColor;
-    document.body.style.setProperty('--bg-color', theme.backgroundColor);
+      document.body.style.backgroundColor = theme.backgroundColor;
+      document.body.style.setProperty('--bg-color', theme.backgroundColor);
 
-    const form = document.getElementById('onboardingForm');
-    if (form) {
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        this.handleOnboardingSubmit(form);
-      });
+      const form = document.getElementById('onboardingForm');
+      if (form) {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.handleOnboardingSubmit(form);
+        });
+      }
+    } catch (error) {
+      console.error('Failed to render onboarding:', error);
     }
   }
 
@@ -280,19 +288,24 @@ class TimeApp {
   }
 
   // Apply the current theme
-  applyTheme() {
-    const currentMode = localStorage.getItem(STORAGE_KEYS.MODE);
-    const theme = THEMES[currentMode === "0" ? 'light' : 'dark'];
-    
-    document.body.style.backgroundColor = theme.backgroundColor;
-    document.body.style.color = theme.textColor;
-    document.body.style.setProperty('--bg-color', theme.backgroundColor);
-    
-    if (this.modeButton) {
-      this.modeButton.innerHTML = theme.themeIcon;
-      this.modeButton.style.color = theme.textColor;
-      this.modeButton.style.borderColor = `${theme.textColor}40`;
-      this.modeButton.style.backgroundColor = `${theme.backgroundColor}CC`;
+  async applyTheme() {
+    try {
+      const result = await chrome.storage.local.get([STORAGE_KEYS.MODE]);
+      const currentMode = result[STORAGE_KEYS.MODE] || "0";
+      const theme = THEMES[currentMode === "0" ? 'light' : 'dark'];
+      
+      document.body.style.backgroundColor = theme.backgroundColor;
+      document.body.style.color = theme.textColor;
+      document.body.style.setProperty('--bg-color', theme.backgroundColor);
+      
+      if (this.modeButton) {
+        this.modeButton.innerHTML = theme.themeIcon;
+        this.modeButton.style.color = theme.textColor;
+        this.modeButton.style.borderColor = `${theme.textColor}40`;
+        this.modeButton.style.backgroundColor = `${theme.backgroundColor}CC`;
+      }
+    } catch (error) {
+      console.error('Failed to apply theme:', error);
     }
   }
 
@@ -317,6 +330,34 @@ class TimeApp {
         </div>
       `;
     }
+  }
+
+  // Clean up resources and event listeners
+  cleanup() {
+    if (this.interval) {
+      clearInterval(this.interval);
+      this.interval = null;
+    }
+    this.el.removeEventListener('submit', this.boundHandleSubmit);
+    if (this.modeButton) {
+      this.modeButton.removeEventListener('click', this.boundToggleTheme);
+    }
+  }
+
+  // Initialize theme toggle button
+  initializeButtons() {
+    this.modeButton = document.getElementById("mode");
+    if (this.modeButton) {
+      this.modeButton.removeEventListener('click', this.boundToggleTheme);
+      this.modeButton.addEventListener('click', this.boundToggleTheme);
+      this.modeButton.style.display = this.isOnboarding ? 'none' : 'flex';
+    }
+  }
+
+  // Set up event listeners for the app
+  setupEventListeners() {
+    this.el.removeEventListener('submit', this.boundHandleSubmit);
+    this.el.addEventListener('submit', this.boundHandleSubmit);
   }
 }
 
