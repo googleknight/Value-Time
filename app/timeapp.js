@@ -54,7 +54,7 @@ class TimeApp {
   async initializeStorage() {
     try {
       const result = await chrome.storage.local.get([STORAGE_KEYS.ONBOARDED, STORAGE_KEYS.MODE]);
-      this.isOnboarding = !result[STORAGE_KEYS.ONBOARDED];
+      this.isOnboarding = result[STORAGE_KEYS.ONBOARDED] !== "true";
       
       // Set initial mode if not set
       if (!result[STORAGE_KEYS.MODE]) {
