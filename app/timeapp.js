@@ -2,24 +2,8 @@
 const REFRESH_INTERVAL = 80; // Update interval in milliseconds
 const DEFAULT_QUOTE = "Make the most of your time.";
 const STORAGE_KEYS = {
-  ANALYTICS: 'analyticsflag',
+  ONBOARDED: 'onboarded',
   MODE: 'mode'
-};
-
-// Analytics constants
-const ANALYTICS_EVENTS = {
-    NEW_TAB_OPENED: 'new_tab_opened',
-    ONBOARDING_COMPLETE: 'onboarding_complete',
-    THEME_CHANGE: 'theme_change'
-};
-
-const ANALYTICS_CATEGORIES = {
-    ENGAGEMENT: 'engagement'
-};
-
-const ANALYTICS_LABELS = {
-    APP_START: 'app_start',
-    FIRST_TIME_USER: 'first_time_user'
 };
 
 // Theme configuration for light and dark modes
@@ -69,8 +53,8 @@ class TimeApp {
   // Initialize storage and check onboarding status
   async initializeStorage() {
     try {
-      const result = await chrome.storage.local.get([STORAGE_KEYS.ANALYTICS, STORAGE_KEYS.MODE]);
-      this.isOnboarding = !result[STORAGE_KEYS.ANALYTICS];
+      const result = await chrome.storage.local.get([STORAGE_KEYS.ONBOARDED, STORAGE_KEYS.MODE]);
+      this.isOnboarding = !result[STORAGE_KEYS.ONBOARDED];
       
       // Set initial mode if not set
       if (!result[STORAGE_KEYS.MODE]) {
@@ -98,17 +82,10 @@ class TimeApp {
       await this.loadQuotes();
       this.setupEventListeners();
       
-      const result = await chrome.storage.local.get([STORAGE_KEYS.ANALYTICS]);
-      if (result[STORAGE_KEYS.ANALYTICS] === "on") {
+      const result = await chrome.storage.local.get([STORAGE_KEYS.ONBOARDED]);
+      if (result[STORAGE_KEYS.ONBOARDED] === "true") {
         this.refreshQuote();
         this.startTimeLoop();
-        // Track new tab opened
-        if (window.analytics) {
-          window.analytics.trackEvent(ANALYTICS_EVENTS.NEW_TAB_OPENED, {
-            event_category: ANALYTICS_CATEGORIES.ENGAGEMENT,
-            event_label: ANALYTICS_LABELS.APP_START
-          });
-        }
       } else {
         this.renderOnboarding();
       }
@@ -152,20 +129,13 @@ class TimeApp {
   // Handle onboarding form submission
   async handleOnboardingSubmit(form) {
     try {
-      await chrome.storage.local.set({ [STORAGE_KEYS.ANALYTICS]: "on" });
+      await chrome.storage.local.set({ [STORAGE_KEYS.ONBOARDED]: "true" });
       this.isOnboarding = false;
       this.initializeButtons();
       this.refreshQuote();
       this.startTimeLoop();
       this.updateTime();
 
-      // Track onboarding completion
-      if (window.analytics) {
-        window.analytics.trackEvent(ANALYTICS_EVENTS.ONBOARDING_COMPLETE, {
-          event_category: ANALYTICS_CATEGORIES.ENGAGEMENT,
-          event_label: ANALYTICS_LABELS.FIRST_TIME_USER
-        });
-      }
     } catch (error) {
       console.error('Failed to save onboarding status:', error);
     }
@@ -175,7 +145,7 @@ class TimeApp {
   async startApp() {
     this.cleanup();
     try {
-      await chrome.storage.local.set({ [STORAGE_KEYS.ANALYTICS]: "on" });
+      await chrome.storage.local.set({ [STORAGE_KEYS.ONBOARDED]: "true" });
       this.isOnboarding = false;
       this.initializeButtons();
       this.refreshQuote();
@@ -201,12 +171,6 @@ class TimeApp {
       this.applyTheme();
       this.updateTime();
 
-      // Track theme change
-      if (window.analytics) {
-        window.analytics.trackEvent(ANALYTICS_EVENTS.THEME_CHANGE, {
-          theme: newMode === "1" ? 'dark' : 'light'
-        });
-      }
     } catch (error) {
       console.error('Failed to toggle theme:', error);
     }
