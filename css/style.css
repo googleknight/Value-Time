@@ -58,7 +58,7 @@ input {
   width: 100%;
   padding: var(--spacing-base);
   text-align: center;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -67,7 +67,7 @@ input {
   font-size: calc(var(--font-size-large) * 1.8);
   font-weight: 600;
   letter-spacing: 0.02em;
-  margin-bottom: 2rem;
+  margin: 2rem 0;
   opacity: 0.9;
   text-transform: uppercase;
 }
@@ -77,7 +77,7 @@ input {
   font-size: calc(var(--font-size-base) * 1.4);
   font-weight: 400;
   line-height: 1.6;
-  max-width: 800px;
+  max-width: 1000px;
   margin: 2rem auto;
   opacity: 0.95;
   padding: 0 1rem;
@@ -89,25 +89,9 @@ input {
   gap: 0.5rem;
   align-items: center;
   justify-content: center;
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum";
-  margin-bottom: 2rem;
   user-select: none;
-}
-
-.count {
-  font-family: "Poppins", sans-serif;
-  font-size: calc(var(--font-size-xl) * 1.2);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  margin: 0;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--transition-speed) ease;
-  width: 1.1em;
-  text-align: center;
+  margin: 0 auto;
+  width: fit-content;
 }
 
 .time-separator {
@@ -140,11 +124,18 @@ label {
 #time-app {
   flex-grow: 5;
 }
+
 /* Button Styles */
 #buttons-container {
   width: 100%;
+  display: flex;
   justify-content: flex-end;
   flex-grow: 1;
+  padding: 1rem;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 100;
 }
 
 #mode,
@@ -196,13 +187,6 @@ button {
 button:hover {
   opacity: 0.8;
   transform: translateY(-1px);
-}
-
-footer {
-  padding-top: 0.5rem;
-  display: -webkit-flex;
-  -webkit-flex-direction: row;
-  -webkit-justify-content: center;
 }
 
 .onboarding {
@@ -289,37 +273,9 @@ footer {
 .quote-container {
   position: relative;
   text-align: center;
-  margin-top: 40px;
-  max-width: 800px;
+  margin-top: 3rem;
+  max-width: 80vw;
   padding: 0 40px;
-}
-
-/* Mobile Optimizations */
-@media (max-width: 768px) {
-  :root {
-    --button-size: 40px;
-    --spacing-base: 1rem;
-    --font-size-base: 16px;
-    --font-size-large: 28px;
-    --font-size-xl: 38px;
-  }
-
-  .timer-container {
-    padding: 1rem;
-  }
-
-  .count {
-    font-size: 2rem;
-  }
-
-  .time-separator {
-    font-size: 2rem;
-  }
-
-  .time-unit,
-  .milliseconds {
-    font-size: 1.5rem;
-  }
 }
 
 /* High DPI Screen Optimizations */
