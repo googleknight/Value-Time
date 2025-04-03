@@ -197,11 +197,7 @@ button:hover {
   min-height: 100vh;
   width: 100%;
   padding: var(--spacing-base);
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.05) 0%,
-    rgba(255, 255, 255, 0.02) 100%
-  );
+  background: #a8a6a0;
   z-index: 1;
 }
 
@@ -229,7 +225,6 @@ button:hover {
     rgba(236, 240, 241, 0.7) 100%
   );
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.02em;
   line-height: 1.2;
@@ -267,7 +262,7 @@ button:hover {
   transform: translateY(-2px);
   background: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 14px 24px rgba(0, 0, 0, 0.1);
 }
 
 .quote-container {

@@ -10,7 +10,7 @@ const STORAGE = {
 // Theme definitions
 const THEMES = {
   light: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "#a8a6a0",
     textColor: "#2c3e50",
     themeIcon: chrome.runtime.getURL("assets/theme-light.svg"),
     settingsIcon: chrome.runtime.getURL("assets/settings-light.svg"),
