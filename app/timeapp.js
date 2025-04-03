@@ -4,6 +4,7 @@ const DEFAULT_QUOTE = "Make the most of your time.";
 const STORAGE = {
   MODE: "mode",
   ONBOARDED: "onboarded",
+  SETTINGS: "settings",
 };
 
 // Theme definitions
@@ -11,24 +12,14 @@ const THEMES = {
   light: {
     backgroundColor: "#ffffff",
     textColor: "#2c3e50",
-    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="5"></circle>
-      <line x1="12" y1="1" x2="12" y2="3"></line>
-      <line x1="12" y1="21" x2="12" y2="23"></line>
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-      <line x1="1" y1="12" x2="3" y2="12"></line>
-      <line x1="21" y1="12" x2="23" y2="12"></line>
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-    </svg>`,
+    themeIcon: chrome.runtime.getURL("assets/theme-light.svg"),
+    settingsIcon: chrome.runtime.getURL("assets/settings-light.svg"),
   },
   dark: {
     backgroundColor: "#1a1a1a",
     textColor: "#ecf0f1",
-    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-    </svg>`,
+    themeIcon: chrome.runtime.getURL("assets/theme-dark.svg"),
+    settingsIcon: chrome.runtime.getURL("assets/settings-dark.svg"),
   },
 };
 
@@ -36,7 +27,9 @@ class TimeApp {
   constructor(elementId) {
     // DOM elements
     this.container = document.getElementById(elementId);
+    this.buttonsContainer = document.getElementById("buttons-container");
     this.themeButton = document.getElementById("mode");
+    this.settingsButton = document.getElementById("settings");
 
     // App state
     this.quotes = [];
@@ -54,10 +47,16 @@ class TimeApp {
       this.themeButton.addEventListener("click", () => this.toggleTheme());
     }
 
+    if (this.settingsButton) {
+      this.settingsButton.addEventListener("click", () =>
+        this.toggleSettings()
+      );
+    }
+
     // Load storage
     const storage = await this.getStorage([STORAGE.MODE, STORAGE.ONBOARDED]);
     this.isDarkMode = storage[STORAGE.MODE] === "1";
-    const isOnboarded = storage[STORAGE.ONBOARDED] === "true";
+    const isOnboarded = storage[STORAGE.ONBOARDED] === "1";
 
     // Apply current theme
     this.applyTheme();
@@ -114,8 +113,8 @@ class TimeApp {
   // Show onboarding screen
   showOnboarding() {
     // Hide theme button during onboarding
-    if (this.themeButton) {
-      this.themeButton.style.display = "none";
+    if (this.buttonsContainer) {
+      this.buttonsContainer.style.display = "none";
     }
 
     // Render onboarding UI
@@ -138,7 +137,7 @@ class TimeApp {
 
   // Complete onboarding and start app
   async completeOnboarding() {
-    await this.setStorage({ [STORAGE.ONBOARDED]: "true" });
+    await this.setStorage({ [STORAGE.ONBOARDED]: "1" });
     const startButton = document.getElementById("start-button");
     if (startButton) {
       startButton.removeEventListener("click", () => this.completeOnboarding());
@@ -149,9 +148,9 @@ class TimeApp {
 
   // Start the main app
   startApp() {
-    // Show theme button
-    if (this.themeButton) {
-      this.themeButton.style.display = "flex";
+    // Show buttons
+    if (this.buttonsContainer) {
+      this.buttonsContainer.style.display = "flex";
     }
 
     // Get a random quote
@@ -248,15 +247,30 @@ class TimeApp {
 
     // Update theme button
     if (this.themeButton) {
-      this.themeButton.innerHTML = theme.icon;
+      this.themeButton.innerHTML = `<img src="${theme.themeIcon}" alt="Theme Icon" width="24" height="24"/>`;
       this.themeButton.style.color = theme.textColor;
       this.themeButton.style.borderColor = `${theme.textColor}40`;
       this.themeButton.style.backgroundColor = `${theme.backgroundColor}CC`;
     }
+
+    // Update settings button
+    if (this.settingsButton) {
+      this.settingsButton.innerHTML = `<img src="${theme.settingsIcon}" alt="Settings Icon" width="24" height="24"/>`;
+      this.settingsButton.style.color = theme.textColor;
+      this.settingsButton.style.borderColor = `${theme.textColor}40`;
+      this.settingsButton.style.backgroundColor = `${theme.backgroundColor}CC`;
+    }
+  }
+
+  async toggleSettings() {
+    this.isSettingsOpen = !this.isSettingsOpen;
+    await this.setStorage({
+      [STORAGE.SETTINGS]: this.isSettingsOpen ? "1" : "0",
+    });
   }
 }
 
 // Initialize the app when the DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
-  window.timeApp = new TimeApp("timeapp");
+  window.timeApp = new TimeApp("time-app");
 });

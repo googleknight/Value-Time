@@ -1,5 +1,5 @@
 /* Import modern fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600&display=swap");
 
 :root {
   --button-size: 48px;
@@ -35,17 +35,18 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  transition: background-color var(--transition-speed) ease,
+    color var(--transition-speed) ease;
   line-height: 1.5;
-  position: relative;
   min-height: 100vh;
   font-size: var(--font-size-base);
 }
 
-body, input {
+body,
+input {
   display: -webkit-flex;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .timer-container {
@@ -53,7 +54,7 @@ body, input {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  min-height: 100%;
   width: 100%;
   padding: var(--spacing-base);
   text-align: center;
@@ -62,7 +63,7 @@ body, input {
 }
 
 .time-label {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: calc(var(--font-size-large) * 1.8);
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -72,7 +73,7 @@ body, input {
 }
 
 .quote-label {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: calc(var(--font-size-base) * 1.4);
   font-weight: 400;
   line-height: 1.6;
@@ -95,7 +96,7 @@ body, input {
 }
 
 .count {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: calc(var(--font-size-xl) * 1.2);
   font-weight: 600;
   letter-spacing: -0.02em;
@@ -110,7 +111,7 @@ body, input {
 }
 
 .time-separator {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: calc(var(--font-size-xl) * 3.2);
   font-weight: 600;
   opacity: 0.3;
@@ -136,9 +137,18 @@ label {
   display: block;
 }
 
+#time-app {
+  flex-grow: 5;
+}
 /* Button Styles */
-#mode {
-  position: fixed;
+#buttons-container {
+  width: 100%;
+  justify-content: flex-end;
+  flex-grow: 1;
+}
+
+#mode,
+#settings {
   width: var(--button-size);
   height: var(--button-size);
   border-radius: var(--border-radius);
@@ -149,24 +159,22 @@ label {
   opacity: 0.9;
   transition: all var(--transition-speed) ease;
   z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  top: var(--spacing-base);
-  right: var(--spacing-base);
+  margin: 0.5rem 1rem;
 }
 
-#mode:hover {
+#mode:hover,
+#settings:hover {
   opacity: 1;
   transform: translateY(-2px) rotate(-30deg);
   border-color: rgba(255, 255, 255, 0.3);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-#mode svg {
+#mode svg,
+#settings svg {
   width: 24px;
   height: 24px;
   stroke-width: 2px;
@@ -174,7 +182,7 @@ label {
 }
 
 button {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-weight: 500;
   padding: 8px 16px;
   border-radius: 8px;
@@ -205,7 +213,11 @@ footer {
   min-height: 100vh;
   width: 100%;
   padding: var(--spacing-base);
-  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
   z-index: 1;
 }
 
@@ -218,17 +230,20 @@ footer {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.1),
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
     inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 .onboarding h1 {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: var(--font-size-xl);
   font-weight: 600;
   margin-bottom: 1rem;
-  background: linear-gradient(135deg, currentColor 0%, rgba(236, 240, 241, 0.7) 100%);
+  background: linear-gradient(
+    135deg,
+    currentColor 0%,
+    rgba(236, 240, 241, 0.7) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
