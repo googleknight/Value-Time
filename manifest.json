@@ -1,36 +1,49 @@
 {
-   "manifest_version": 3,
-   "name": "ValueTime",
-   "version": "1.3.1",
-   "description": "Replace new tab page with a beautiful time management tool that shows time left in day and motivational quotes.",
-   "author": {
-      "email": "shubham.mathur.wrk@gmail.com"
-   },
-   "permissions": [
-      "storage"
-   ],
-   "action": {
-      "default_icon": {
-         "16": "icon-16.png",
-         "48": "icon-48.png",
-         "128": "icon-128.png"
-      },
-      "default_title": "ValueTime"
-   },
-   "icons": {
-      "16": "icon-16.png",
-      "48": "icon-48.png",
-      "128": "icon-128.png"
-   },
-   "chrome_url_overrides": {
-      "newtab": "home.html"
-   },
-   "content_security_policy": {
-      "extension_pages": "script-src 'self'; object-src 'self'"
-   },
-   "short_name": "ValueTime",
-   "offline_enabled": true,
-   "homepage_url": "https://github.com/googleknight/Value-Time",
-   "minimum_chrome_version": "88",
-   "incognito": "split"
+  "manifest_version": 3,
+  "name": "ValueTime",
+  "version": "1.3.1",
+  "description": "Replace new tab page with a beautiful time management tool that shows time left in day and motivational quotes.",
+  "author": {
+    "email": "shubham.mathur.wrk@gmail.com"
+  },
+  "permissions": ["storage"],
+  "icons": {
+    "16": "assets/icon-16.png",
+    "48": "assets/icon-48.png",
+    "128": "assets/icon-128.png"
+  },
+  "action": {
+    "default_icon": {
+      "16": "assets/icon-16.png",
+      "48": "assets/icon-48.png",
+      "128": "assets/icon-128.png"
+    },
+    "default_title": "ValueTime"
+  },
+  "chrome_url_overrides": {
+    "newtab": "home.html"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "short_name": "ValueTime",
+  "offline_enabled": true,
+  "homepage_url": "https://github.com/googleknight/Value-Time",
+  "minimum_chrome_version": "88",
+  "incognito": "split",
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "app/quotes.json",
+        "assets/theme-light.svg",
+        "assets/theme-dark.svg",
+        "assets/settings-light.svg",
+        "assets/settings-dark.svg",
+        "assets/next-timer-light.svg",
+        "assets/next-timer-dark.svg",
+        "css/style.css"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

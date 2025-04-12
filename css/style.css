@@ -62,7 +62,7 @@ input {
   margin: 0 auto;
 }
 
-.time-label {
+.timer-label {
   font-family: "Poppins", sans-serif;
   font-size: calc(var(--font-size-large) * 1.8);
   font-weight: 600;
@@ -115,10 +115,6 @@ input {
 .milliseconds {
   font-size: calc(var(--font-size-xl) * 3.2);
   opacity: 0.5;
-}
-
-label {
-  display: block;
 }
 
 #time-app {
@@ -287,7 +283,7 @@ button:hover {
     padding: 1rem;
   }
 
-  .time-label {
+  .timer-label {
     font-size: 1.25rem;
   }
 
