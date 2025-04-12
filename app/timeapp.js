@@ -1,10 +1,12 @@
 // Constants
 const REFRESH_INTERVAL = 80; // milliseconds
 const DEFAULT_QUOTE = "Make the most of your time.";
+const DEFAULT_TIMER = { hour: 24, minute: 0, label: "Day" };
 const STORAGE = {
   MODE: "mode",
   ONBOARDED: "onboarded",
   SETTINGS: "settings",
+  TIMERS: "timers",
 };
 
 // Theme definitions
@@ -14,12 +16,14 @@ const THEMES = {
     textColor: "#2c3e50",
     themeIcon: chrome.runtime.getURL("assets/theme-light.svg"),
     settingsIcon: chrome.runtime.getURL("assets/settings-light.svg"),
+    nextTimerIcon: chrome.runtime.getURL("assets/next-timer-light.svg"),
   },
   dark: {
     backgroundColor: "#1a1a1a",
     textColor: "#ecf0f1",
     themeIcon: chrome.runtime.getURL("assets/theme-dark.svg"),
     settingsIcon: chrome.runtime.getURL("assets/settings-dark.svg"),
+    nextTimerIcon: chrome.runtime.getURL("assets/next-timer-dark.svg"),
   },
 };
 
@@ -30,6 +34,10 @@ class TimeApp {
     this.buttonsContainer = document.getElementById("buttons-container");
     this.themeButton = document.getElementById("mode");
     this.settingsButton = document.getElementById("settings");
+    this.nextTimerButton = document.getElementById("switch-timer");
+    this.countElement = null;
+    this.quoteLabelElement = null;
+    this.timeLabelElement = null;
 
     // App state
     this.quotes = [];
@@ -37,26 +45,55 @@ class TimeApp {
     this.timerInterval = null;
     this.isDarkMode = false;
 
+    // Timers state
+    this.timers = {
+      current: { index: 0 },
+      all: [],
+    };
+
     // Initialize app
     this.init();
   }
 
   async init() {
-    // Set up theme toggle
+    // Set up event listeners for buttons
     if (this.themeButton) {
       this.themeButton.addEventListener("click", () => this.toggleTheme());
     }
-
     if (this.settingsButton) {
       this.settingsButton.addEventListener("click", () =>
         this.toggleSettings()
       );
     }
+    if (this.nextTimerButton) {
+      this.nextTimerButton.addEventListener("click", () => this.changeTimer());
+    }
 
     // Load storage
-    const storage = await this.getStorage([STORAGE.MODE, STORAGE.ONBOARDED]);
+    const storage = await this.getStorage([
+      STORAGE.MODE,
+      STORAGE.ONBOARDED,
+      STORAGE.TIMERS,
+    ]);
+
     this.isDarkMode = storage[STORAGE.MODE] === "1";
     const isOnboarded = storage[STORAGE.ONBOARDED] === "1";
+
+    // Initialize timers
+    if (
+      storage[STORAGE.TIMERS] &&
+      Array.isArray(storage[STORAGE.TIMERS].all) &&
+      storage[STORAGE.TIMERS].all.length > 0
+    ) {
+      this.timers = storage[STORAGE.TIMERS];
+      // Ensure current index is within bounds
+      if (this.timers.current.index >= this.timers.all.length) {
+        this.timers.current.index = 0;
+      }
+    } else {
+      this.initializeDefaultTimers();
+      await this.setStorage({ [STORAGE.TIMERS]: this.timers });
+    }
 
     // Apply current theme
     this.applyTheme();
@@ -72,7 +109,12 @@ class TimeApp {
     }
   }
 
-  // Storage helper
+  initializeDefaultTimers() {
+    const defaultTimer = DEFAULT_TIMER;
+    this.timers.current = { index: 0 };
+    this.timers.all = [defaultTimer];
+  }
+
   async getStorage(keys) {
     try {
       return await chrome.storage.local.get(keys);
@@ -82,7 +124,6 @@ class TimeApp {
     }
   }
 
-  // Set storage helper
   async setStorage(data) {
     try {
       await chrome.storage.local.set(data);
@@ -91,7 +132,6 @@ class TimeApp {
     }
   }
 
-  // Load quotes from JSON file
   async loadQuotes() {
     try {
       const response = await fetch("app/quotes.json");
@@ -103,21 +143,17 @@ class TimeApp {
     }
   }
 
-  // Get a random quote
   getRandomQuote() {
     return this.quotes.length > 0
       ? this.quotes[Math.floor(Math.random() * this.quotes.length)]
       : DEFAULT_QUOTE;
   }
 
-  // Show onboarding screen
   showOnboarding() {
-    // Hide theme button during onboarding
     if (this.buttonsContainer) {
       this.buttonsContainer.style.display = "none";
     }
 
-    // Render onboarding UI
     this.container.innerHTML = `
       <div class="onboarding">
         <div class="onboarding-content">
@@ -128,76 +164,118 @@ class TimeApp {
       </div>
     `;
 
-    // Add event listener for start button
     const startButton = document.getElementById("start-button");
     if (startButton) {
       startButton.addEventListener("click", () => this.completeOnboarding());
     }
   }
 
-  // Complete onboarding and start app
   async completeOnboarding() {
     await this.setStorage({ [STORAGE.ONBOARDED]: "1" });
     const startButton = document.getElementById("start-button");
     if (startButton) {
       startButton.removeEventListener("click", () => this.completeOnboarding());
     }
-
     this.startApp();
   }
 
-  // Start the main app
   startApp() {
-    // Show buttons
     if (this.buttonsContainer) {
       this.buttonsContainer.style.display = "flex";
     }
-
-    // Get a random quote
     this.currentQuote = this.getRandomQuote();
-
-    // Start the timer
+    this.renderInitialApp();
     this.startTimer();
   }
 
-  // Start timer update loop
+  renderInitialApp() {
+    const currentIndex = this.timers.current.index;
+    this.container.innerHTML = `
+      <div class="timer-container">
+        <h1 class="time-label">TIME LEFT IN ${this.timers.all[currentIndex].label}</h1>
+        <div id="count">
+          <div class="time-unit">00</div>
+          <div class="time-separator">:</div>
+          <div class="time-unit">00</div>
+          <div class="time-separator">:</div>
+          <div class="time-unit">00</div>
+          <div class="time-separator">:</div>
+          <div class="time-unit milliseconds">000</div>
+        </div>
+        <div class="quote-container">
+          <h1 class="quote-label">${this.currentQuote}</h1>
+        </div>
+      </div>
+    `;
+    this.countElement = document.getElementById("count");
+    this.quoteLabelElement = document.querySelector(".quote-label");
+    this.timeLabelElement = document.querySelector(".time-label");
+  }
+
   startTimer() {
-    // Clear any existing interval
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
     }
-
-    // Update immediately
-    this.updateTimer();
-
-    // Set interval for updates
+    this.updateTimerDisplay(this.getTimeLeft());
     this.timerInterval = setInterval(
-      () => this.updateTimer(),
+      () => this.updateTimerDisplay(this.getTimeLeft()),
       REFRESH_INTERVAL
     );
   }
 
-  // Update timer display
-  updateTimer() {
-    const timeLeft = this.getTimeLeft();
-    this.renderApp(timeLeft);
+  stopTimer() {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
+    this.container.innerHTML = "";
+    this.countElement = null;
+    this.quoteLabelElement = null;
+    this.timeLabelElement = null;
   }
 
-  // Calculate time left in day
+  updateTimerDisplay({ hours, minutes, seconds, milliseconds }) {
+    if (this.countElement) {
+      const timeUnits = this.countElement.querySelectorAll(".time-unit");
+      if (timeUnits.length === 4) {
+        timeUnits[0].textContent = hours;
+        timeUnits[1].textContent = minutes;
+        timeUnits[2].textContent = seconds;
+        timeUnits[3].textContent = milliseconds;
+      }
+    }
+    if (this.quoteLabelElement) {
+      this.quoteLabelElement.textContent = this.currentQuote;
+    }
+  }
+
   getTimeLeft() {
     const now = new Date();
+    const currentIndex = this.timers.current.index;
+    const targetTimer = this.timers.all[currentIndex];
+    const targetDate = new Date();
+    targetDate.setHours(targetTimer.hour);
+    targetDate.setMinutes(targetTimer.minute);
+    targetDate.setSeconds(0);
+    targetDate.setMilliseconds(0);
 
-    // Calculate hours, minutes, seconds left
-    const hoursLeft =
-      24 -
-      now.getHours() -
-      (now.getMinutes() > 0 || now.getSeconds() > 0 ? 1 : 0);
-    const minutesLeft =
-      now.getSeconds() > 0 ? 59 - now.getMinutes() : 60 - now.getMinutes();
-    const secondsLeft = 60 - now.getSeconds();
-    const msLeft = 1000 - now.getMilliseconds();
+    const timeLeftMs = targetDate.getTime() - now.getTime();
 
-    // Format with leading zeros
+    if (timeLeftMs <= 0) {
+      return {
+        hours: "00",
+        minutes: "00",
+        seconds: "00",
+        milliseconds: "000",
+      };
+    }
+
+    const hoursLeft = Math.floor(timeLeftMs / (1000 * 60 * 60));
+    const minutesLeft = Math.floor(
+      (timeLeftMs % (1000 * 60 * 60)) / (1000 * 60)
+    );
+    const secondsLeft = Math.floor((timeLeftMs % (1000 * 60)) / 1000);
+    const msLeft = Math.floor(timeLeftMs % 1000);
+
     return {
       hours: hoursLeft.toString().padStart(2, "0"),
       minutes: minutesLeft.toString().padStart(2, "0"),
@@ -208,57 +286,48 @@ class TimeApp {
     };
   }
 
-  // Render the main app view
-  renderApp({ hours, minutes, seconds, milliseconds }) {
-    this.container.innerHTML = `
-      <div class="timer-container">
-        <h1 class="time-label">TIME LEFT IN DAY</h1>
-        <div id="count">
-          <div class="time-unit">${hours}</div>
-          <div class="time-separator">:</div>
-          <div class="time-unit">${minutes}</div>
-          <div class="time-separator">:</div>
-          <div class="time-unit">${seconds}</div>
-          <div class="time-separator">:</div>
-          <div class="time-unit milliseconds">${milliseconds}</div>
-        </div>
-        <div class="quote-container">
-          <h1 class="quote-label">${this.currentQuote}</h1>
-        </div>
-      </div>
-    `;
-  }
-
-  // Toggle between light and dark themes
   async toggleTheme() {
     this.isDarkMode = !this.isDarkMode;
     await this.setStorage({ [STORAGE.MODE]: this.isDarkMode ? "1" : "0" });
     this.applyTheme();
   }
 
-  // Apply the current theme
   applyTheme() {
     const theme = THEMES[this.isDarkMode ? "dark" : "light"];
 
-    // Apply to body
     document.body.style.backgroundColor = theme.backgroundColor;
     document.body.style.color = theme.textColor;
     document.body.style.setProperty("--bg-color", theme.backgroundColor);
 
-    // Update theme button
-    if (this.themeButton) {
-      this.themeButton.innerHTML = `<img src="${theme.themeIcon}" alt="Theme Icon" width="24" height="24"/>`;
-      this.themeButton.style.color = theme.textColor;
-      this.themeButton.style.borderColor = `${theme.textColor}40`;
-      this.themeButton.style.backgroundColor = `${theme.backgroundColor}CC`;
-    }
+    this.updateButtonTheme(
+      this.themeButton,
+      theme.themeIcon,
+      "Theme Icon",
+      theme.textColor,
+      theme.backgroundColor
+    );
+    this.updateButtonTheme(
+      this.settingsButton,
+      theme.settingsIcon,
+      "Settings Icon",
+      theme.textColor,
+      theme.backgroundColor
+    );
+    this.updateButtonTheme(
+      this.nextTimerButton,
+      theme.nextTimerIcon,
+      "Next Timer",
+      theme.textColor,
+      theme.backgroundColor
+    );
+  }
 
-    // Update settings button
-    if (this.settingsButton) {
-      this.settingsButton.innerHTML = `<img src="${theme.settingsIcon}" alt="Settings Icon" width="24" height="24"/>`;
-      this.settingsButton.style.color = theme.textColor;
-      this.settingsButton.style.borderColor = `${theme.textColor}40`;
-      this.settingsButton.style.backgroundColor = `${theme.backgroundColor}CC`;
+  updateButtonTheme(button, iconSrc, altText, textColor, bgColor) {
+    if (button) {
+      button.innerHTML = `<img src="${iconSrc}" alt="${altText}" width="24" height="24"/>`;
+      button.style.color = textColor;
+      button.style.borderColor = `${textColor}40`;
+      button.style.backgroundColor = `${bgColor}CC`;
     }
   }
 
@@ -267,10 +336,51 @@ class TimeApp {
     await this.setStorage({
       [STORAGE.SETTINGS]: this.isSettingsOpen ? "1" : "0",
     });
+    this.stopTimer();
+    // Here you would likely show your settings UI
+    // For this example, we'll just log it.
+    console.log("Settings toggled:", this.isSettingsOpen);
   }
+
+  async changeTimer() {
+    if (this.timers.all.length > 0) {
+      this.timers.current.index =
+        (this.timers.current.index + 1) % this.timers.all.length;
+      await this.setStorage({ [STORAGE.TIMERS]: this.timers });
+      if (this.timeLabelElement) {
+        this.timeLabelElement.textContent = `TIME LEFT IN ${
+          this.timers.all[this.timers.current.index].label
+        }`;
+      }
+      this.updateTimerDisplay(this.getTimeLeft());
+    }
+  }
+
+  // Method to add or update a timer (for user configuration)
+  // async setCustomTimer(hour, minute, label) {
+  //   const newTimer = {
+  //     hour: parseInt(hour, 10),
+  //     minute: parseInt(minute, 10),
+  //     label,
+  //   };
+  //   this.timers.all = this.timers.all.push(newTimer);
+  //   this.timers.current.index = 0;
+  //   await this.setStorage({ [STORAGE.TIMERS]: this.timers });
+  //   if (this.timeLabelElement) {
+  //     this.timeLabelElement.textContent = `TIME LEFT IN ${newTimer.label}`;
+  //   }
+  //   this.startTimer();
+  // }
+
+  // Example of how you might call setCustomTimer from a UI interaction:
+  // document.getElementById('save-timer').addEventListener('click', () => {
+  //   const hourInput = document.getElementById('hour-input').value;
+  //   const minuteInput = document.getElementById('minute-input').value;
+  //   const labelInput = document.getElementById('label-input').value;
+  //   window.timeApp.setCustomTimer(hourInput, minuteInput, labelInput);
+  // });
 }
 
-// Initialize the app when the DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
   window.timeApp = new TimeApp("time-app");
 });

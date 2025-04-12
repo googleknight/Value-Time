@@ -139,7 +139,8 @@ label {
 }
 
 #mode,
-#settings {
+#settings,
+#switch-timer {
   width: var(--button-size);
   height: var(--button-size);
   border-radius: var(--border-radius);
@@ -153,11 +154,12 @@ label {
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin: 0.5rem 1rem;
+  margin: 0.5rem 0.2rem;
 }
 
 #mode:hover,
-#settings:hover {
+#settings:hover,
+#switch-timer:hover {
   opacity: 1;
   transform: translateY(-2px) rotate(-30deg);
   border-color: rgba(255, 255, 255, 0.3);
@@ -165,9 +167,8 @@ label {
 }
 
 #mode svg,
-#settings svg {
-  width: 24px;
-  height: 24px;
+#settings svg,
+#switch-timer svg {
   stroke-width: 2px;
   transition: all var(--transition-speed) ease;
 }
