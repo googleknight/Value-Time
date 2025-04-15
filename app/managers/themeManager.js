@@ -36,6 +36,12 @@ export class ThemeManager {
     document.body.style.color = theme.textColor;
     document.body.style.setProperty("--bg-color", theme.backgroundColor);
 
+    if (this.isDarkMode) {
+      document.body.classList.add("dark-theme");
+    } else {
+      document.body.classList.remove("dark-theme");
+    }
+
     // Update buttons
     this.updateButtonTheme(
       this.domElements.themeButton,

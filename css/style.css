@@ -62,7 +62,7 @@ input {
   margin: 0 auto;
 }
 
-.timer-label {
+.time-label {
   font-family: "Poppins", sans-serif;
   font-size: calc(var(--font-size-large) * 1.8);
   font-weight: 600;
@@ -294,4 +294,392 @@ button:hover {
   .milliseconds {
     font-size: 2rem;
   }
+}
+
+/* Settings Container with Theme Support */
+.settings-container {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  margin: 0 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 96vh;
+  align-items: center;
+  transition: all var(--transition-speed) ease;
+}
+.settings-title {
+  font-size: 28px;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  transition: color var(--transition-speed) ease;
+}
+
+/* Add Timer Section */
+.add-timer-section,
+.timers-list-section {
+  width: 25rem;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all var(--transition-speed) ease;
+}
+
+/* Dark mode theme adjustments */
+body.dark-theme .add-timer-section,
+body.dark-theme .timers-list-section {
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.add-timer-section h2,
+.timers-list-section h2 {
+  font-size: 20px;
+  margin-bottom: 1.2rem;
+  font-weight: 500;
+  font-family: "Poppins", sans-serif;
+  transition: color var(--transition-speed) ease;
+}
+
+.add-timer-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
+  font-weight: 500;
+  opacity: 0.85;
+  font-size: 0.95rem;
+  transition: color var(--transition-speed) ease;
+}
+
+.time-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.time-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.time-selector span {
+  font-size: 20px;
+  margin: 0 2px;
+  font-weight: 500;
+  transition: color var(--transition-speed) ease;
+}
+
+input,
+select {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background-color: rgba(255, 255, 255, 0.9);
+  color: inherit;
+  font-size: 0.95rem;
+  transition: all var(--transition-speed) ease;
+}
+
+/* Dark mode input styles */
+body.dark-theme input,
+body.dark-theme select {
+  background-color: rgba(30, 30, 30, 0.8);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #ecf0f1;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: rgba(52, 152, 219, 0.7);
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+input[type="number"] {
+  width: 70px;
+  text-align: center;
+}
+
+/* Button Styles */
+.action-button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+  font-weight: 500;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-button {
+  background-color: #27ae60;
+  color: white;
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 12px;
+}
+
+.add-button:hover {
+  background-color: #2ecc71;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Timer Items */
+.timer-item {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  background-color: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all var(--transition-speed) ease;
+}
+
+/* Dark mode timer item */
+body.dark-theme .timer-item {
+  background-color: rgba(30, 30, 30, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.timer-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Dark mode hover state */
+body.dark-theme .timer-item:hover {
+  background-color: rgba(40, 40, 40, 0.4);
+}
+
+.timer-item > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.timer-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.timer-label {
+  font-weight: 600;
+  font-size: 18px;
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  transition: color var(--transition-speed) ease;
+}
+
+.timer-time {
+  font-size: 16px;
+  opacity: 0.85;
+  transition: color var(--transition-speed) ease;
+}
+
+.timer-current-tag {
+  font-size: 13px;
+  color: #f91e06;
+  font-weight: 500;
+  margin-top: 3px;
+}
+body.dark-theme .timer-current-tag {
+  color: #f39c12;
+}
+
+.timer-actions {
+  justify-content: space-around;
+  display: flex;
+  gap: 10px;
+}
+
+.edit-btn,
+.delete-btn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all var(--transition-speed) ease;
+}
+
+.edit-btn {
+  background-color: #3498db;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+}
+
+.edit-btn[disabled],
+.delete-btn[disabled] {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+}
+
+/* Edit Form */
+.edit-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  background-color: rgba(0, 0, 0, 0.04);
+  border-radius: 8px;
+  margin-top: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  transition: all var(--transition-speed) ease;
+}
+
+/* Dark mode edit container */
+body.dark-theme .edit-container {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.save-btn {
+  background-color: #27ae60;
+  color: white;
+}
+
+.save-btn:hover {
+  background-color: #2ecc71;
+}
+
+.cancel-btn {
+  background-color: #7f8c8d;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: #95a5a6;
+}
+
+/* Current Timer Highlight */
+.current-timer {
+  border-left: 4px solid #f39c12;
+  position: relative;
+}
+
+.current-timer::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #f39c12;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.no-timers-message {
+  text-align: center;
+  padding: 20px;
+  opacity: 0.7;
+  transition: color var(--transition-speed) ease;
+}
+
+.hour-input,
+.minute-input {
+  width: 70px;
+  text-align: center;
+}
+
+.period-select {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background-color: rgba(255, 255, 255, 0.9);
+  color: inherit;
+  cursor: pointer;
+  min-width: 70px;
+}
+
+/* Dark mode period select */
+body.dark-theme .period-select {
+  background-color: rgba(30, 30, 30, 0.8);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Make sure minute input always shows two digits */
+.minute-input {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Default timer styling enhancement */
+.default-timer {
+  background-color: rgba(255, 255, 255, 0.09);
+}
+
+body.dark-theme .default-timer {
+  background-color: rgba(40, 40, 40, 0.4);
+}
+/* Back Button */
+.back-button {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: none;
+  background-color: #3498db;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition: all var(--transition-speed) ease;
+  z-index: 10;
+}
+
+.back-button:hover {
+  background-color: #2980b9;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }

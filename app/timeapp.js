@@ -5,6 +5,7 @@ import { StorageManager } from "./managers/storageManager.js";
 import { QuoteManager } from "./managers/quoteManager.js";
 import { TimerManager } from "./managers/timerManager.js";
 import { ThemeManager } from "./managers/themeManager.js";
+import { SettingsManager } from "./managers/settingsManager.js";
 import { UIManager } from "./managers/uiManager.js";
 import { MainPage } from "./pages/mainPage.js";
 import { OnboardingPage } from "./pages/onboardingPage.js";
@@ -27,6 +28,12 @@ export class TimeApp {
       this.domElements
     );
 
+    // Create settings manager
+    this.settingsManager = new SettingsManager(
+      this.storageManager,
+      this.timerManager
+    );
+
     // Make app instance globally available for UI event handlers
     window.timeApp = this;
 
@@ -41,9 +48,13 @@ export class TimeApp {
       this.storageManager,
       () => this.startMainApp()
     );
-    this.settingsPage = new SettingsPage(this.uiManager, this.timerManager);
 
-    this.isSettingsOpen = false;
+    // Pass the managers to SettingsPage
+    this.settingsPage = new SettingsPage(
+      this.uiManager,
+      this.timerManager,
+      this.storageManager
+    );
   }
 
   async init() {
@@ -51,6 +62,7 @@ export class TimeApp {
     await Promise.all([
       this.themeManager.initialize(),
       this.timerManager.initialize(),
+      this.settingsManager.initialize(),
       this.quoteManager.loadQuotes(),
       this.uiManager.initialize(),
     ]);
@@ -69,20 +81,21 @@ export class TimeApp {
   }
 
   async handleSettingsToggle() {
-    this.isSettingsOpen = !this.isSettingsOpen;
-    await this.storageManager.set({
-      [STORAGE.SETTINGS]: this.isSettingsOpen ? "1" : "0",
-    });
-    if (this.isSettingsOpen) {
+    // Use settings manager to toggle settings
+    const isSettingsOpen = await this.settingsManager.toggleSettings();
+
+    if (isSettingsOpen) {
       this.mainPage.destroy();
       this.settingsPage.render();
     } else {
+      if (this.settingsPage && this.settingsPage.destroy) {
+        this.settingsPage.destroy();
+      }
       this.startMainApp();
     }
   }
 
   startMainApp() {
-    this.isSettingsOpen = false;
     this.mainPage.render();
   }
 }

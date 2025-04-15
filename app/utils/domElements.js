@@ -20,6 +20,15 @@ export class DOMElements {
     this.quoteLabelElement = null;
     this.timeLabelElement = null;
 
+    // Settings elements
+    this.timersListElement = null;
+    this.addTimerButton = null;
+    this.settingsBackButton = null;
+    this.newTimerLabelInput = null;
+    this.newTimerHourInput = null;
+    this.newTimerMinuteInput = null;
+    this.newTimerPeriodSelect = null;
+
     DOMElements.instance = this;
   }
 
@@ -35,8 +44,33 @@ export class DOMElements {
     if (this.container) {
       this.countElement = document.getElementById("count");
       this.quoteLabelElement = document.querySelector(".quote-label");
-      this.timeLabelElement = document.querySelector(".timer-label");
+      this.timeLabelElement = document.querySelector(".time-label");
     }
+  }
+
+  // Method to update settings elements that are dynamically created
+  updateSettingsElements() {
+    if (this.container) {
+      this.timersListElement = document.getElementById("timers-list");
+      this.addTimerButton = document.getElementById("add-timer-btn");
+      this.newTimerLabelInput = document.getElementById("new-timer-label");
+      this.newTimerHourInput = document.getElementById("new-timer-hour");
+      this.newTimerMinuteInput = document.getElementById("new-timer-minute");
+      this.newTimerPeriodSelect = document.getElementById("new-timer-period");
+    }
+
+    // Back button is added directly to body
+    this.settingsBackButton = document.getElementById("back-to-timer-btn");
+  }
+
+  // Helper method to get edit form elements for a specific timer index
+  getEditFormElements(index) {
+    return {
+      labelInput: document.getElementById(`edit-label-${index}`),
+      hourInput: document.getElementById(`edit-hour-${index}`),
+      minuteInput: document.getElementById(`edit-minute-${index}`),
+      periodSelect: document.getElementById(`edit-period-${index}`),
+    };
   }
 
   // Clear container content but maintain references
@@ -46,6 +80,12 @@ export class DOMElements {
       this.countElement = null;
       this.quoteLabelElement = null;
       this.timeLabelElement = null;
+      this.timersListElement = null;
+      this.addTimerButton = null;
+      this.newTimerLabelInput = null;
+      this.newTimerHourInput = null;
+      this.newTimerMinuteInput = null;
+      this.newTimerPeriodSelect = null;
     }
   }
 }

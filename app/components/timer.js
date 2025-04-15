@@ -6,7 +6,7 @@ export class TimerComponent {
   render(label, quote) {
     this.uiManager.domElements.container.innerHTML = `
         <div class="timer-container">
-          <h1 class="timer-label">TIME LEFT IN ${label}</h1>
+          <h1 class="time-label">TIME LEFT IN ${label}</h1>
           <div id="count">
             <div class="time-unit">00</div>
             <div class="time-separator">:</div>
@@ -21,10 +21,5 @@ export class TimerComponent {
           </div>
         </div>
       `;
-    this.uiManager.domElements.countElement = document.getElementById("count");
-    this.uiManager.domElements.quoteLabelElement =
-      document.querySelector(".quote-label");
-    this.uiManager.domElements.timeLabelElement =
-      document.querySelector(".timer-label");
   }
 }
