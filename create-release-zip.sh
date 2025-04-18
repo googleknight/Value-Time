@@ -8,7 +8,7 @@ cp -r ./* temp_zip/
 
 # Remove excluded files and directories
 cd temp_zip
-rm -rf LICENSE README.md privacy.png dark.png light.png PRIVACY.md .git .github temp_zip create-release-zip.sh
+rm -rf LICENSE README.md privacy.png dark.png light.png PRIVACY.md .git .github temp_zip create-release-zip.sh screens
 cd ..
 
 # Create the zip file
@@ -17,4 +17,4 @@ zip -r ../extension.zip ./*
 cd ..
 
 # Clean up
-rm -rf temp_zip 
+rm -rf temp_zip
