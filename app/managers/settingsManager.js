@@ -82,6 +82,7 @@ export class SettingsManager {
 
   convertTo12Hour(hour24, minute) {
     let period = hour24 >= 12 ? "PM" : "AM";
+    if (hour24 === 24) period = "AM";
     let hour12 = hour24 % 12;
 
     // Convert hour 0 to 12 for 12 AM
