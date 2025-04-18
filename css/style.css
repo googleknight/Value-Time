@@ -1,5 +1,5 @@
 /* Import modern fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600&display=swap");
 
 :root {
   --button-size: 48px;
@@ -35,17 +35,18 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  transition: background-color var(--transition-speed) ease,
+    color var(--transition-speed) ease;
   line-height: 1.5;
-  position: relative;
   min-height: 100vh;
   font-size: var(--font-size-base);
 }
 
-body, input {
+body,
+input {
   display: -webkit-flex;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .timer-container {
@@ -53,30 +54,30 @@ body, input {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  min-height: 100%;
   width: 100%;
   padding: var(--spacing-base);
   text-align: center;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
 .time-label {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: calc(var(--font-size-large) * 1.8);
   font-weight: 600;
   letter-spacing: 0.02em;
-  margin-bottom: 2rem;
+  margin: 2rem 0;
   opacity: 0.9;
   text-transform: uppercase;
 }
 
 .quote-label {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: calc(var(--font-size-base) * 1.4);
   font-weight: 400;
   line-height: 1.6;
-  max-width: 800px;
+  max-width: 1000px;
   margin: 2rem auto;
   opacity: 0.95;
   padding: 0 1rem;
@@ -88,29 +89,13 @@ body, input {
   gap: 0.5rem;
   align-items: center;
   justify-content: center;
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum";
-  margin-bottom: 2rem;
   user-select: none;
-}
-
-.count {
-  font-family: 'Poppins', sans-serif;
-  font-size: calc(var(--font-size-xl) * 1.2);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  margin: 0;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--transition-speed) ease;
-  width: 1.1em;
-  text-align: center;
+  margin: 0 auto;
+  width: fit-content;
 }
 
 .time-separator {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: calc(var(--font-size-xl) * 3.2);
   font-weight: 600;
   opacity: 0.3;
@@ -132,13 +117,26 @@ body, input {
   opacity: 0.5;
 }
 
-label {
-  display: block;
+#time-app {
+  flex-grow: 5;
 }
 
 /* Button Styles */
-#mode {
+#buttons-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  flex-grow: 1;
+  padding: 1rem;
   position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 100;
+}
+
+#mode,
+#settings,
+#switch-timer {
   width: var(--button-size);
   height: var(--button-size);
   border-radius: var(--border-radius);
@@ -149,32 +147,30 @@ label {
   opacity: 0.9;
   transition: all var(--transition-speed) ease;
   z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  top: var(--spacing-base);
-  right: var(--spacing-base);
+  margin: 0.5rem 0.2rem;
 }
 
-#mode:hover {
+#mode:hover,
+#settings:hover,
+#switch-timer:hover {
   opacity: 1;
   transform: translateY(-2px) rotate(-30deg);
   border-color: rgba(255, 255, 255, 0.3);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-#mode svg {
-  width: 24px;
-  height: 24px;
+#mode svg,
+#settings svg,
+#switch-timer svg {
   stroke-width: 2px;
   transition: all var(--transition-speed) ease;
 }
 
 button {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-weight: 500;
   padding: 8px 16px;
   border-radius: 8px;
@@ -190,13 +186,6 @@ button:hover {
   transform: translateY(-1px);
 }
 
-footer {
-  padding-top: 0.5rem;
-  display: -webkit-flex;
-  -webkit-flex-direction: row;
-  -webkit-justify-content: center;
-}
-
 .onboarding {
   position: relative;
   display: flex;
@@ -205,7 +194,7 @@ footer {
   min-height: 100vh;
   width: 100%;
   padding: var(--spacing-base);
-  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+  background: #a8a6a0;
   z-index: 1;
 }
 
@@ -218,19 +207,21 @@ footer {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.1),
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
     inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 .onboarding h1 {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: var(--font-size-xl);
   font-weight: 600;
   margin-bottom: 1rem;
-  background: linear-gradient(135deg, currentColor 0%, rgba(236, 240, 241, 0.7) 100%);
+  background: linear-gradient(
+    135deg,
+    currentColor 0%,
+    rgba(236, 240, 241, 0.7) 100%
+  );
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.02em;
   line-height: 1.2;
@@ -268,43 +259,15 @@ footer {
   transform: translateY(-2px);
   background: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 14px 24px rgba(0, 0, 0, 0.1);
 }
 
 .quote-container {
   position: relative;
   text-align: center;
-  margin-top: 40px;
-  max-width: 800px;
+  margin-top: 3rem;
+  max-width: 80vw;
   padding: 0 40px;
-}
-
-/* Mobile Optimizations */
-@media (max-width: 768px) {
-  :root {
-    --button-size: 40px;
-    --spacing-base: 1rem;
-    --font-size-base: 16px;
-    --font-size-large: 28px;
-    --font-size-xl: 38px;
-  }
-
-  .timer-container {
-    padding: 1rem;
-  }
-
-  .count {
-    font-size: 2rem;
-  }
-
-  .time-separator {
-    font-size: 2rem;
-  }
-
-  .time-unit,
-  .milliseconds {
-    font-size: 1.5rem;
-  }
 }
 
 /* High DPI Screen Optimizations */
@@ -320,7 +283,7 @@ footer {
     padding: 1rem;
   }
 
-  .time-label {
+  .timer-label {
     font-size: 1.25rem;
   }
 
@@ -331,4 +294,392 @@ footer {
   .milliseconds {
     font-size: 2rem;
   }
+}
+
+/* Settings Container with Theme Support */
+.settings-container {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  margin: 0 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 96vh;
+  align-items: center;
+  transition: all var(--transition-speed) ease;
+}
+.settings-title {
+  font-size: 28px;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  transition: color var(--transition-speed) ease;
+}
+
+/* Add Timer Section */
+.add-timer-section,
+.timers-list-section {
+  width: 25rem;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all var(--transition-speed) ease;
+}
+
+/* Dark mode theme adjustments */
+body.dark-theme .add-timer-section,
+body.dark-theme .timers-list-section {
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.add-timer-section h2,
+.timers-list-section h2 {
+  font-size: 20px;
+  margin-bottom: 1.2rem;
+  font-weight: 500;
+  font-family: "Poppins", sans-serif;
+  transition: color var(--transition-speed) ease;
+}
+
+.add-timer-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
+  font-weight: 500;
+  opacity: 0.85;
+  font-size: 0.95rem;
+  transition: color var(--transition-speed) ease;
+}
+
+.time-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.time-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.time-selector span {
+  font-size: 20px;
+  margin: 0 2px;
+  font-weight: 500;
+  transition: color var(--transition-speed) ease;
+}
+
+input,
+select {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background-color: rgba(255, 255, 255, 0.9);
+  color: inherit;
+  font-size: 0.95rem;
+  transition: all var(--transition-speed) ease;
+}
+
+/* Dark mode input styles */
+body.dark-theme input,
+body.dark-theme select {
+  background-color: rgba(30, 30, 30, 0.8);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #ecf0f1;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: rgba(52, 152, 219, 0.7);
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+input[type="number"] {
+  width: 70px;
+  text-align: center;
+}
+
+/* Button Styles */
+.action-button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+  font-weight: 500;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-button {
+  background-color: #27ae60;
+  color: white;
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 12px;
+}
+
+.add-button:hover {
+  background-color: #2ecc71;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Timer Items */
+.timer-item {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  background-color: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all var(--transition-speed) ease;
+}
+
+/* Dark mode timer item */
+body.dark-theme .timer-item {
+  background-color: rgba(30, 30, 30, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.timer-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Dark mode hover state */
+body.dark-theme .timer-item:hover {
+  background-color: rgba(40, 40, 40, 0.4);
+}
+
+.timer-item > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.timer-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.timer-label {
+  font-weight: 600;
+  font-size: 18px;
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  transition: color var(--transition-speed) ease;
+}
+
+.timer-time {
+  font-size: 16px;
+  opacity: 0.85;
+  transition: color var(--transition-speed) ease;
+}
+
+.timer-current-tag {
+  font-size: 13px;
+  color: #f91e06;
+  font-weight: 500;
+  margin-top: 3px;
+}
+body.dark-theme .timer-current-tag {
+  color: #f39c12;
+}
+
+.timer-actions {
+  justify-content: space-around;
+  display: flex;
+  gap: 10px;
+}
+
+.edit-btn,
+.delete-btn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all var(--transition-speed) ease;
+}
+
+.edit-btn {
+  background-color: #3498db;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+}
+
+.edit-btn[disabled],
+.delete-btn[disabled] {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+}
+
+/* Edit Form */
+.edit-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  background-color: rgba(0, 0, 0, 0.04);
+  border-radius: 8px;
+  margin-top: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  transition: all var(--transition-speed) ease;
+}
+
+/* Dark mode edit container */
+body.dark-theme .edit-container {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.save-btn {
+  background-color: #27ae60;
+  color: white;
+}
+
+.save-btn:hover {
+  background-color: #2ecc71;
+}
+
+.cancel-btn {
+  background-color: #7f8c8d;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: #95a5a6;
+}
+
+/* Current Timer Highlight */
+.current-timer {
+  border-left: 4px solid #f39c12;
+  position: relative;
+}
+
+.current-timer::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #f39c12;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.no-timers-message {
+  text-align: center;
+  padding: 20px;
+  opacity: 0.7;
+  transition: color var(--transition-speed) ease;
+}
+
+.hour-input,
+.minute-input {
+  width: 70px;
+  text-align: center;
+}
+
+.period-select {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background-color: rgba(255, 255, 255, 0.9);
+  color: inherit;
+  cursor: pointer;
+  min-width: 70px;
+}
+
+/* Dark mode period select */
+body.dark-theme .period-select {
+  background-color: rgba(30, 30, 30, 0.8);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Make sure minute input always shows two digits */
+.minute-input {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Default timer styling enhancement */
+.default-timer {
+  background-color: rgba(255, 255, 255, 0.09);
+}
+
+body.dark-theme .default-timer {
+  background-color: rgba(40, 40, 40, 0.4);
+}
+/* Back Button */
+.back-button {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: none;
+  background-color: #3498db;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition: all var(--transition-speed) ease;
+  z-index: 10;
+}
+
+.back-button:hover {
+  background-color: #2980b9;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
